@@ -18,7 +18,7 @@ if(args.buildType is "release"):
     typeOfBuild = "release"
 
 numberOfBuildThreads = 1
-if(args.numberOfBuildThreads is not None):
+if(args.numberOfBuildThreads is not None and args.numberOfBuildThreads >= 1):
     numberOfBuildThreads = args.numberOfBuildThreads
 print("Using {} threads to build".format(numberOfBuildThreads))
 
