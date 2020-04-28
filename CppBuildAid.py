@@ -4,31 +4,47 @@ import subprocess
 import shutil
 import os
 
-print("Starting CppBuildAid")
 
-argumentParser = argparse.ArgumentParser()
-argumentParser.add_argument("-bt", "--buildType")
-argumentParser.add_argument("-bl", "--buildLanguage")
-argumentParser.add_argument("-nbt", "--numberOfBuildThreads")
+def main(argv):
+    build()
 
-args = argumentParser.parse_args()
 
-typeOfBuild = "debug"
-if(args.buildType is "release"):
-    typeOfBuild = "release"
+if __name__ == "__main__":
+    main(sys.argv)
 
-numberOfBuildThreads = 1
-if(args.numberOfBuildThreads is not None and args.numberOfBuildThreads >= 1):
-    numberOfBuildThreads = args.numberOfBuildThreads
-print("Using {} threads to build".format(numberOfBuildThreads))
 
-if(os.path.exists("build")):
-    shutil.rmtree("build")
+def build(argv):
+    print("Starting CppBuildAid")
 
-print("Running cmake")
+    argumentParser = argparse.ArgumentParser()
+    argumentParser.add_argument("-bt", "--buildType")
+    argumentParser.add_argument("-bl", "--buildLanguage")
+    argumentParser.add_argument("-t", "--threads")
 
-subprocess.call(["cmake", "-H.", "-Bbuild"])
-subprocess.call(["cmake", "-DCMAKE_BUILD_TYPE={}".format(typeOfBuild.capitalize()), "."], cwd="build")
-subprocess.call(["cmake", "--build", ".", "--", "-j", str(numberOfBuildThreads)], cwd="build")
+    args = argumentParser.parse_args()
 
-print("Build completed successfully")
+    typeOfBuild = "debug"
+    if(args.buildType == "release"):
+        typeOfBuild = "release"
+
+    threads = 1
+    if(args.threads is not None and args.threads >= 1):
+        threads = args.threads
+
+    print("Running cmake")
+    print("Using {} threads to build in {}-mode".format(threads, typeOfBuild))
+
+    resultBuildType = subprocess.call(["cmake", "-DCMAKE_BUILD_TYPE={}".format(typeOfBuild.capitalize()), "."], cwd="build")
+    resultBuild = subprocess.call(["cmake", "--build", ".", "-j", str(threads)], cwd="build")
+
+    print("Build process completed")
+    if(resultBuildType == 0 or resultBuild == 0):
+        print("Build failes with errors")
+
+
+def generateSourceList():
+    pass
+
+
+def generateIncludeList():
+    pass
