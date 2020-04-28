@@ -3,6 +3,7 @@ import argparse
 import subprocess
 import shutil
 import os
+from datetime import datetime
 
 
 def main(argv):
@@ -15,6 +16,7 @@ if __name__ == "__main__":
 
 def build(argv):
     print("Starting CppBuildAid")
+    startTime = datetime.now()
 
     argumentParser = argparse.ArgumentParser()
     argumentParser.add_argument("-bt", "--buildType")
@@ -37,9 +39,9 @@ def build(argv):
     resultBuildType = subprocess.call(["cmake", "-DCMAKE_BUILD_TYPE={}".format(typeOfBuild.capitalize()), "."], cwd="build")
     resultBuild = subprocess.call(["cmake", "--build", ".", "-j", str(threads)], cwd="build")
 
-    print("Build process completed")
     if(resultBuildType == 0 or resultBuild == 0):
         print("Build failes with errors")
+    print("Build completed successfully in {} ms.".format(datetime.now() - startTime))
 
 
 def generateSourceList():
