@@ -17,4 +17,4 @@ This makes building easier beacause no one has to keep track of those files, the
 ## Options:
 Currently it supports these options:
 * -bt --buildType -> debug(default)/release
-* -nbt --numberOfBuildThreads -> 1(default)/any unsigned integer except zero
+* -t --numberOfBuildThreads -> 1(default)/any unsigned integer except zero
