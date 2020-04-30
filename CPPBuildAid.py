@@ -23,15 +23,13 @@ def generateSourceList():
 
 
 def generateIncludeList():
-    headerFiles = []
+    headerFileDirectories = []
     includePath = os.path.join(os.getcwd(), "include")
     if (includePath):
         for dirpath, dirs, files in os.walk(includePath):
-            for filename in files:
-                if(str(filename).endswith('.h') or str(filename).endswith('.hpp')):
-                    relativeFilePath = os.path.relpath(os.path.join(dirpath, filename), os.getcwd())
-                    headerFiles.append(relativeFilePath)
-        return headerFiles
+            relativeDirectoryPath = os.path.relpath(dirpath, os.getcwd())
+            headerFileDirectories.append(relativeDirectoryPath)
+        return headerFileDirectories
     else:
         print("Unable to find include directory. Terminating")
         exit(1)
@@ -52,7 +50,7 @@ def build(argv):
         typeOfBuild = "release"
 
     threads = 1
-    if(args.threads is not None and args.threads >= 1):
+    if(args.threads is not None and int(args.threads) >= 1):
         threads = args.threads
 
     relativeSourceFilePaths = generateSourceList()
@@ -61,10 +59,10 @@ def build(argv):
         sourceListFile.write(relativeSourceFilePath + "\n")
     sourceListFile.close()
 
-    relativeHeaderFilePaths = generateIncludeList()
+    relativeHeaderFileDirectories = generateIncludeList()
     includeListFile = open("includelist.cmake", "w")
-    for relativeHeaderFilePath in relativeHeaderFilePaths:
-        includeListFile.write(relativeHeaderFilePath + "\n")
+    for relativeHeaderFileDirectory in relativeHeaderFileDirectories:
+        includeListFile.write(relativeHeaderFileDirectory + "\n")
     includeListFile.close()
 
     print("Running cmake")
