@@ -14,6 +14,8 @@ add_executable(<TEST> ${sources})
 
 This makes building easier beacause no one has to keep track of those files, they are added to the list files recursively.
 
+This script also counts code lines from headers and source code files. It ignores "lib" and "library" folders for counting only so only the code written for the project is counted.
+
 ## Options:
 Currently it supports these options:
 * -bt --buildType -> debug(default)/release
