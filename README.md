@@ -1,6 +1,6 @@
 # CPPBuildAid
 
-## Current version is: 1.1.0
+## Current version is: 2.0.0
 
 ## Description:
 This is a small script that helps with building C++ and C projects using cmake. I guess there are many such things, but this is mine. The script should be placed in the root directory of the project CMakeLists.txt. This script will create several lists of source files in a ```cmakeListings``` directory in the same directory of this script. The directories are listed as absolute and relative paths in relation to this script. Lists of all found headers and source files are also generated. One can use those lists in cmake like this:
