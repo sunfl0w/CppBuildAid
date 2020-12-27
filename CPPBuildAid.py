@@ -48,15 +48,22 @@ def build(argv):
     projectDescription = readProjectDescriptionFile("projectDescription.xml")
 
     # Generating include list and source list files
-    print("Generating include list")
-    includeSearch = listFilesOfTypeInDirectories(projectDescription[0], (".h", ".hpp"))
-    print("Saving include list")
-    saveStringsInFile(includeSearch[1], "includelist.cmake")
+    if not os.path.exists("cmakeListings"):
+        os.mkdir("cmakeListings")
 
-    print("Generating source list")
+    print("Generating include lists")
+    includeSearch = listFilesOfTypeInDirectories(projectDescription[0], (".h", ".hpp"))
+    print("Saving include lists")
+    saveStringsInFile(includeSearch[0], "cmakeListings/includeFiles.cmake")
+    saveStringsInFile(includeSearch[1], "cmakeListings/includeDirsAbs.cmake")
+    saveStringsInFile(includeSearch[2], "cmakeListings/includeDirsRel.cmake")
+
+    print("Generating source lists")
     sourceSearch = listFilesOfTypeInDirectories(projectDescription[1], (".c", ".cpp"))
-    print("Saving source list")
-    saveStringsInFile(sourceSearch[0], "sourcelist.cmake")
+    print("Saving source lists")
+    saveStringsInFile(sourceSearch[0], "cmakeListings/sourceFiles.cmake")
+    saveStringsInFile(sourceSearch[1], "cmakeListings/sourceDirsAbs.cmake")
+    saveStringsInFile(sourceSearch[2], "cmakeListings/sourceDirsRel.cmake")
 
     # Count lines of code
     headerCodeLines = countLinesOfCode(includeSearch[0], projectDescription[2])
@@ -126,22 +133,24 @@ def readDirectoryPathsFromNode(node):
 
 
 def listFilesOfTypeInDirectories(directoryPathsToSearch, fileExtensions):
-    filePaths = []
-    populatedDirectoryPaths = []
+    filePathsAbs = []
+    populatedDirectoryPathsAbs = []
+    populatedDirectoryPathsRel = []
 
     for directoryPath in directoryPathsToSearch:
         directoryPath = os.path.join(os.getcwd(), directoryPath)
         if directoryPath:
             for dirpath, dirs, files in os.walk(directoryPath):
                 relativeDirectoryPath = os.path.relpath(dirpath, os.getcwd())
-                if relativeDirectoryPath not in populatedDirectoryPaths:
-                    populatedDirectoryPaths.append(relativeDirectoryPath)
+                if relativeDirectoryPath not in populatedDirectoryPathsAbs:
+                    populatedDirectoryPathsAbs.append(os.path.abspath(relativeDirectoryPath))
+                    populatedDirectoryPathsRel.append(relativeDirectoryPath)
                 for filename in files:
                     filePath = os.path.relpath(os.path.join(dirpath, filename), os.getcwd())
-                    if isFileOfType(filename, fileExtensions) and filePath not in filePaths:
-                        filePaths.append(filePath)
+                    if isFileOfType(filename, fileExtensions) and filePath not in filePathsAbs:
+                        filePathsAbs.append(os.path.abspath(filePath))
 
-    return (filePaths, populatedDirectoryPaths)
+    return (filePathsAbs, populatedDirectoryPathsAbs, populatedDirectoryPathsRel)
 
 
 def isFileOfType(filename, fileExtensions):

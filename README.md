@@ -1,13 +1,13 @@
 # CPPBuildAid
 
-## Current version is: 1.0.0
+## Current version is: 1.1.0
 
 ## Description:
-This is a small script that helps with building C++ and C projects using cmake. I guess there are many such things, but this is mine. The script should be placed in the root directory of the project CMakeLists.txt. This script will create a includelist.cmake and a sourcelist.cmake with all source and header files to use in a CMakeLists.txt via:
+This is a small script that helps with building C++ and C projects using cmake. I guess there are many such things, but this is mine. The script should be placed in the root directory of the project CMakeLists.txt. This script will create several lists of source files in a ```cmakeListings``` directory in the same directory of this script. The directories are listed as absolute and relative paths in relation to this script. Lists of all found headers and source files are also generated. One can use those lists in cmake like this:
 
 ```
-file(STRINGS "includelist.cmake" includes)
-file(STRINGS "sourcelist.cmake" sources)
+file(STRINGS "includeDirsAbs.cmake" includes)
+file(STRINGS "sourceFiles.cmake" sources)
 
 include_directories(${includes})
 
@@ -15,7 +15,7 @@ add_executable(<TEST> ${sources})
 ```
 
 This makes building easier because no one has to keep track of those files, they are added to the list files recursively.
-This script will scan header and source files in specified directories.
+This script will scan header and source files in specified directories, and all subdirectories.
 
 This script also counts code lines from headers and source code files. It will also ignore files in specified directories from beeing counted.
 
