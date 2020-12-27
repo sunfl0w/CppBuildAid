@@ -8,7 +8,7 @@ import time
 
 import xml.etree.ElementTree as ET
 
-# Version 1.0.0
+# Version 2.0.0
 # Published under MIT license. Copyright (c) 2020 sunfl0w
 
 
@@ -25,6 +25,8 @@ def build(argv):
     argumentParser.add_argument("-b", "--buildType")
     argumentParser.add_argument("-t", "--threads")
     argumentParser.add_argument("-i", "--installLocal", action='store_true')
+    argumentParser.add_argument("-s", "--useSwig", action='store_true')
+    argumentParser.add_argument("-l", "--swigLanguage")
 
     args = argumentParser.parse_args()
 
@@ -35,6 +37,12 @@ def build(argv):
     threads = 1
     if(args.threads is not None and int(args.threads) >= 1):
         threads = args.threads
+
+    useSwig = args.useSwig
+    swigLanguage = args.swigLanguage
+
+    if(useSwig):
+        generateSwigInterface(swigLanguage);
 
     # Read project description
     projectDescription = readProjectDescriptionFile("projectDescription.xml")
@@ -167,6 +175,17 @@ def isFileChildOfDirectories(filePath, directories):
         if absDirectoryPath == commonPath:
             return True
     return False
+
+
+def generateSwigInterface(swigLanguage):
+    if(swigLanguage == "python"):
+        subprocess.call(["swig", "-c++", "-wall", "-doxygen", "-python", "-py3", "-o", "swigInterface.cpp", "-oh", "swigInterface.hpp", "-outdir", "swigOut", "swig.i"])
+    else:
+        print("Swig language not supportet")
+        exit(1)
+    
+    os.replace("swigInterface.hpp", "include/swig/swigInterface.hpp")
+    os.replace("swigInterface.cpp", "src/swig/swigInterface.cpp")
 
 
 if __name__ == "__main__":

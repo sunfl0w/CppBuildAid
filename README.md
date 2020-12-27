@@ -47,3 +47,5 @@ Currently CPPBuildAid supports these options:
 * -b --buildType -> debug(default)/release
 * -t --numberOfBuildThreads -> 1(default)/any unsigned integer except zero
 * -i --installLocal -> if specified the install command of cmake will be executed. With this one can install a shared library on a system for example. This might require privilege levels
+* -s --useSwig -> when specified swig will be used to generate a wrapper for a native shared library. CMake has to compile a shared library to use this
+* -l --swigLanguage -> the language swig should wrap for. Only Python is supportrt with "python"
